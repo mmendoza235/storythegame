@@ -1,0 +1,12 @@
+You enter a dark room with three doors.
+Do you go through door #1, #2 or #3?
+PROMPT
+1. CONTINUE: bearRoom
+STOP
+2. CONTINUE: insaneRoom
+STOP
+3. CONTINUE: fancyHallway
+STOP
+ELSE: GAMEOVER: You stumble around and fall on a knife and die.
+STOP
+

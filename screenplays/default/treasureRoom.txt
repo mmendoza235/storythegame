@@ -1,0 +1,42 @@
+Mountains of gold and silver surround you.
+Precious gems can be seen littered throughout the room.
+Something doesn't seem right.
+...
+A shroud of darkness appears from the depths of the cave.
+This dark-cloaked figure points directly at you with hand of bones.
+His eyes burn with hate as he says:
+
+"This place is not meant for mortals."
+...
+"Since you made it this far, you may take some treasure with you."
+"How many pieces of treasure do you desire?"
+PROMPT
+1. "You are one greedy mortal!"
+The ghoulish figure grabs your neck with invisible arms and lifts you off the ground.
+You can't breathe. You feel as though your soul is being ripped from your body when.
+...
++++
+You reach for anything that can help.
+Of course! The sword!
+You swing wildly in front of you slicing right through the neck of your attacker.
+Darkness oozes from the wound and pulsates with a green glow.
+Your body drops to the ground as the monster screams in agony.
+...
+GG: The treasure is yours! You are now the richest person in the world!
+---
+You reach for anything in your pocket.
+The flashlight you had on you doesn't help.
+GAMEOVER: The world fades away into darkness and the maniacal laughter of your killer echoes into nothing.
+STOP
+2. "You could've asked for %d! Muahahaha!"
+You are allowed to leave with the measely treasure you requested.
+GAMEOVER: You forever regret that you didn't ask for more.
+STOP
+3. The monster becomes infuriated that you don't want a single piece of the treasure.
+GAMEOVER: It burns you alive with his fiery gaze.
+STOP
+ELSE: "That doesn't answer my question!"
+GAMEOVER: You spontaniously combust.
+STOP
+
+

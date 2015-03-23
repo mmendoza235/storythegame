@@ -1,0 +1,16 @@
+There's a giant bear here eating a cheese cake. What do you do?
+1. Take the cake.
+2. Scream at the bear.
+3. Loudly proclaim that it's so cold outside because of the winter season.
+PROMPT
+1. GAMEOVER: The bear eats your face off.
+STOP
+2. GAMEOVER: The bear eats your legs off.
+STOP
+3. CONTINUE: bearGrills
+STOP
+ELSE: Well, doing %s is probably a better choice.
+The bear runs away.
+...
+GAMEOVER: only to return with a katana to slice you in half.
+STOP

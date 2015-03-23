@@ -1,0 +1,17 @@
+You stare into the endless abyss at Cthulhu's retina.
+1. Blueberries.
+2. Yellow jacket clothespins.
+3. Understanding revolvers yelling melodies.
+PROMPT
+1. GAMEOVER: Your body survives powered by a mind of jello.
+STOP
+2. GAMEOVER: Your body survives powered by a mind of jello.
+STOP
+3. You wake up from what you thought was a nightmare.
+But then.
+...
+CONTINUE: gameStart
+STOP
+ELSE: GAMEOVER: The insanity rots your eyes into a pool of muck.
+STOP
+

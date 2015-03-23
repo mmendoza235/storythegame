@@ -1,0 +1,36 @@
+The cavern is so dark, you use the rock wall to guide yourself further.
+The wall is strangely slimey.
+...
+At the end of the cavern, you see a faint glow of candlelight. What do you do?
+1. Turn back and leave this stupid cave!
+2. Poke and examine the slimy wall.
+3. Head toward the light!
+PROMPT
+1. The slimy-scaly wall begins to move and surround you.
+A horrifying hissing noise reminds you of something.
+...
+You quickly realize you had a flashlight the whole time!
+Turning on the flashlight reveals.
+...
+Yup, just as you thought. A giant snake!
+GAMEOVER: The snake swallows you whole!
+STOP
+2. The slimy-scaly wall begins to move and surround you.
+A horrifying hissing noise reminds you of something.
+...
+You quickly realize you had a flashlight the whole time!
+Turning on the flashlight reveals.
+...
+Yup, just as you thought. A giant snake!
+GAMEOVER: The snake swallows you whole!
+STOP
+3. CONTINUE: strangeLight
+STOP
+ELSE: You decide that '%s' isn't such a good idea.
+You can't make up your mind and decide to sit down to rest.
+...
+You sit down for the next 47 years until you're too old to do anything.
+GAMEOVER: You are dead!
+STOP
+
+

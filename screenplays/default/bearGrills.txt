@@ -1,0 +1,21 @@
+The bear glances at his wrist watch.
+His eyes widen and he immediately falls asleep and enters hibernation.
+...
+Behind the sleeping bear is the entrance to a deep underground cavern.
+Also, a good portion of the cheese cake remains. Oooh, it's oreo flavor! What do you do?
+1. Proceed to the dark cavern.
+2. Quietly take the cake.
+PROMPT
+1. CONTINUE: darkCavern
+STOP
+2. You snatch up the cake. The bear snorts ever so softly.
+The cake is so delicious and tasty.
+Every bite fills you with an incredible sense of achievement and joy.
+But then you realize
+...
+The cake has distracted you from noticing that the bear has eaten you whole!
+GAMEOVER: You are now hibernation food!
+STOP
+ELSE: Only the delicious cake or mysterious cavern can satisfy your desires.
+So what will it be?
+STOP

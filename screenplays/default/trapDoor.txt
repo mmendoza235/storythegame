@@ -1,0 +1,22 @@
+The mosaic window is masterfully crafted. Each glass portion is full of vibrant color.
+The strangest thing happens though.
+...
+The image in the window is shifting into what looks like words.
+"WATCH YOUR STEP"
+...
+A trap door opens underneath you!
+The fall seems to last forever. Suddenly, outstreched arms grab you from all directions.
+The ghastly arms hold you firmly, preventing you from falling further.
+...
+A strange whisper of a voice startles you.
+"Up or down."
+"You musssst choose now, or elsssse."
+1. Up
+2. Down
+PROMPT
+1. GAMEOVER: UNFINISHED GAME. MUST HELP MIKEY.
+STOP
+2. GAMEOVER: UNFINISHED GAME. MUST HELP MIKEY.
+STOP
+ELSE: GAMEOVER: The hands release you and you fall for eternity.
+STOP

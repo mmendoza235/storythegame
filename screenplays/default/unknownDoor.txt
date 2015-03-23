@@ -1,0 +1,35 @@
+You walk through the door into a dark-smelly room.
+You can hear your heartbeat inside your head slowly pulsing and getting louder with every beat.
+...
+Standing in front of you is a large squid-like beast with wings. But he doesn't notice you.
+His attention is firmly locked onto the doorway on the other side of the room.
+...
+To the right, you can barely see the opening to a secret passageway.
+Directly behind the beast lies an ancient rusted sword. What do you do?
+1. Politely ask the beast for directions.
+2. Quickly grab the sword and head for the passageway
+3. Don't chance getting the beast's attention and quietly leave.
+PROMPT
+1. "Excuse me," you nervously ask.
+The monster slowly gazes in your direction.
+...
+CONTINUE: insaneRoom
+STOP
+2. ITEM: sword
+You inch your way toward the sword. You are about to grab it when.
+...
+You step on a rubber duckie! The noise pierces the air as you squint in terror.
+You can hear your heart beat louder and faster than ever before.
+...
+Opening your eyes reveals the beast unaffected by your disturbance!
+You quickly grab the sword and head for the exit.
+...
+CONTINUE: darkCavern
+STOP
+3. You safely left the room.
+...
+CONTINUE: darkCavern
+STOP
+ELSE: GAMOEVER: You die for no apparent reason.
+STOP
+

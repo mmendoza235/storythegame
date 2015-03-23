@@ -1,0 +1,14 @@
+Through the doorway lies a nicely lit hallway.
+You admire the intricate design in the rug as you make your way down the hall.
+...
+You've reached the end of the hallway. To the left lies a door to an unknown room.
+To the right is a beautifully lit mosaic window. What is that design?
+1. Go through the door on the left?
+2. Check out that window to the right?
+PROMPT
+1. CONTINUE: unknownDoor
+STOP
+2. CONTINUE: trapDoor
+STOP
+ELSE: GAMEOVER: An ominous silence overcomes you. Only nothingness remains.
+STOP

@@ -1,0 +1,21 @@
+The faint light is actually a small button. Press it?
+1. Yes
+2. No
+PROMPT
+1. The button causes a blinding light to fill the entire cave.
+This scares away the slimey wall.
+...
+I wonder what it was.
+...
+The blinding light dims enough to reveal a cave full of treasure!
+CONTINUE: treasureRoom
+STOP
+2. You decide that you're too tired and you return home safely.
+GAMEOVER: You forever regret that you did not press that button.
+STOP
+ELSE: You only have two options!
+The narrator reveals himself behind a curtain near the button.
+...
+He pulls out a tiny futuristic looking gun and zaps you into oblivion.
+GAMEOVER: You are now dead!
+STOP
