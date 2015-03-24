@@ -24,8 +24,8 @@ CONTINUE = "CONTINUE: "
 ITEM = "ITEM: "
 ELSE = "ELSE: "
 STOP = "STOP"
-HAS_ITEM = '+++'
-NO_ITEM = '---'
+HAS_ITEM = "+++"
+NO_ITEM = "---"
 
 # Default story path defined here.
 # Override in story_name.py for custom story
@@ -79,7 +79,7 @@ class BaseStory(object):
 		if item:
 			self.items.append(item)
 		
-		script = self.import_story()					# Script imported as a list
+		script = self.import_story()
 		
 		for num in range(len(script)):
 			if PROMPT in script[num]:
@@ -104,8 +104,9 @@ class BaseStory(object):
 		for key, value in DOOR_CHOICES.iteritems():
 			if answer in value:
 				return key
-														# Default to the else scenario for invalid answer. 
-		return ELSE								# Actual else statement doesn't work
+		
+		# Default to the else scenario for invalid answer.
+		return ELSE
 	
 	def story_indeces(self, choice, script_choices):
 		"""
@@ -114,8 +115,10 @@ class BaseStory(object):
 		The number choice, i.e. '1. ', indicates the start index
 		The following 'STOP' keyword indicates the stop index
 		"""
-		start, stop = "not set", "not set"				# Don't set the stop index unless the start index
-														# has been set. False or 0 didn't work
+		start, stop = "not set", "not set"
+		
+		# Don't set the stop index unless the start index
+		# has been set. False or 0 conflicts with zero index of the list
 		for index in range(len(script_choices)):
 			if choice in script_choices[index]:
 				start = index
@@ -135,12 +138,16 @@ class BaseStory(object):
 		"""
 		start, stop = self.story_indeces(choice, script_choices)
 		
-		if start == "not set":											# Default to the else scenario
-			choice = ELSE												# if the user's choice is not available
+		# Default to the else scenario
+		# if the user's choice is not available
+		if start == "not set":
+			choice = ELSE
 			start, stop = self.story_indeces(choice, script_choices)
 		
-		reduced_script = script_choices[start: stop]					# Remove alternate scenarios
-		reduced_script[0] = reduced_script[0][len(choice):]				# Remove choice keyword from text i.e. '1. '
+		# Remove alternate scenarios
+		# Remove choice keyword from text i.e. '1. '
+		reduced_script = script_choices[start: stop]
+		reduced_script[0] = reduced_script[0][len(choice):]
 		
 		if self.story_item:
 			reduced_script = self.item_script(reduced_script)
@@ -152,9 +159,10 @@ class BaseStory(object):
 		Additional script modification in the event a story_item
 		is used to alter the outcome of the story
 		"""
-		try:															# Catch the exception and return an
-			has_item_index = reduced_script.index(HAS_ITEM)				# unmodified script if the item doesn't
-		except ValueError:												# alter the story
+		try:
+			has_item_index = reduced_script.index(HAS_ITEM)
+		except ValueError:
+			# if HAS_ITEM keyword not present, return unaltered script
 			return reduced_script
 		
 		no_item_index = reduced_script.index(NO_ITEM)
@@ -190,7 +198,6 @@ class BaseStory(object):
 				item = line[len(ITEM):]
 			
 			elif CONTINUE in line:
-				#exec line[len(CONTINUE):] + ".story_intro(item)"
 				scene_name = line[len(CONTINUE):]
 				StoryMap().map[scene_name].story_intro(item)
 			
@@ -204,8 +211,9 @@ class BaseStory(object):
 			" 	for character dialogue
 			... to indicate a user keypress and pause execution
 		"""
-		if '"' in line and '%' in line:					# Tab when there is dialogue
-			print "\t", line % answer					# Formatted variable defaults to user input
+		if '"' in line and '%' in line:
+			# Formatted variable defaults to user input
+			print "\t", line % answer
 		
 		elif '%' in line:
 			print line % answer
@@ -226,7 +234,8 @@ class BaseStory(object):
 		"""
 		if death:
 			print reason, "Game Over!"
-			#exit(0)										# Stop code execution on game over scenario, stops gui as well
+			# Stop code execution on game over scenario, stops gui as well
+			#exit(0)
 		else:
 			print reason, "You win!"
 	
@@ -245,42 +254,49 @@ class WhileStory(BaseStory):
 		"""
 		start, stop = self.story_indeces(choice, script_choices)
 		
-		if start == "not set":											# Default to the else scenario
-			choice = ELSE												# if the user's choice is not available
+		if start == "not set":
+			choice = ELSE
 			start, stop = self.story_indeces(choice, script_choices)
 		
-		reduced_script = script_choices[start: stop]					# Remove unnecessary text
+		# Remove unnecessary text
+		reduced_script = script_choices[start: stop]
 		reduced_script[0] = reduced_script[0][len(choice):]
 		
-		if choice == ELSE:												# While loop-like functionality
-			self.story_decode(answer, reduced_script)					# Print else text
-			self.story_prompt(script_choices)							# Re-call the prompt code
+		# While loop-like functionality
+		if choice == ELSE:
+			self.story_decode(answer, reduced_script)
+			self.story_prompt(script_choices)
 		else:
 			self.story_decode(answer, reduced_script)
 
 class ComparisonStory(BaseStory):
 	"""
 	Updates the base story class with comparison operators.
+	compare_num attribute used in user comparison logic.
 	"""
 	def __init__(self, room_name, compare_num):
 		super(ComparisonStory, self).__init__(room_name)
-		self.compare_num = random.randint(1, compare_num)				# Added comparison parameter is randomized
-																		# based on the instantiated compare_num value
+		self.compare_num = random.randint(1, compare_num)
+	
 	def user_choice(self, answer):
 		"""
 		Convert the user answer to an integer for comparison operations.
 		"""
 		try:
 			answer = int(answer)
-			choice = self.comparison(answer)							# Determine user choice by comparison
-			return choice												# operations rather than DOOR_CHOICES attribute
+			choice = self.comparison(answer)
+			return choice												
 		
-		except ValueError:												# Default to else statement if
-			return ELSE													# user input is not an integer
+		except ValueError:
+			# Default to else statement if
+			# user input is not an integer
+			return ELSE
 	
 	def story_print(self, line, answer=''):
-		if '"' in line and '%' in line:				# Display the random integer determined by the compare_num
-			print "\t", line % self.compare_num		# attribute instead of the user's input in the parent class
+		if '"' in line and '%' in line:
+			# story_print overridden to display
+			# compare_num's random integer
+			print "\t", line % self.compare_num
 		
 		elif '%' in line:
 			print line % self.compare_num
