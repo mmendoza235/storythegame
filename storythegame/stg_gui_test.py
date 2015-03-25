@@ -1,11 +1,34 @@
 import Tkinter as tk
 import tkMessageBox # In Python 3.x, import tkinter.messagebox
 import ttk
+
 import stg
-import default_stg
+#import default_stg
+from screenplays import default_stg
 
 file_name = ''
 import_story = "default_stg"
+
+def active_games():
+	"""
+	Generates a list of the active games based on the presence
+	of the story modules that create the screenplay objects.
+	"""
+	from os import listdir
+	from os.path import isfile, join, splitext
+	
+	screenplay_path = "screenplays\\"
+	
+	game_list = []
+	
+	for game_file in listdir(screenplay_path):
+		file_path = join(screenplay_path, game_file)
+		if isfile(file_path) and game_file.endswith('.py') and not game_file.startswith('__init__'):
+			game_list.append(file_path)
+	
+	print game_list
+	
+	return game_list
 
 def select_game(game_choice):
 	import importlib
@@ -75,9 +98,8 @@ menubar = tk.Menu(app)
 app.config(menu=menubar)
 
 file_menu = tk.Menu(menubar, tearoff=0)
-file_menu.add_command(label="Start Game", command=default_stg.gameStart.story_intro)	# TODO: default_stg.gameStart should be dynamic!!!
-																						# Need to allow for separation of customizable stories
-																						# Prevents writing to source code files directly
+file_menu.add_command(label="Start Game", command=default_stg.gameStart.story_intro)
+# TODO: selecting game imports appropriate story_name_stg module
 file_menu.add_command(label="Select Game", command=lambda: select_game("default_stg"))
 
 file_menu.add_separator()
@@ -167,5 +189,5 @@ button1.pack(side='left', padx=5, pady=5)
 """ Status Bar """
 statusLabel = tk.Label(app, bd=1, text='Welcome to Story the Game!', relief='sunken', anchor = 'e')
 statusLabel.pack(side='bottom', fill='x')
-
+active_games()
 app.mainloop()

@@ -2,7 +2,8 @@ import Tkinter as tk
 import ttk
 
 import stg
-import default_stg
+#import default_stg
+from screenplays import default_stg
 
 file_name = ''
 
@@ -161,12 +162,16 @@ class StoryEdit(tk.Frame):
 		storyFiles = tk.StringVar()
 		storyFiles.set(None)
 		files = story_dict().keys()
-		storyDropDown = tk.OptionMenu(commandWrapper, storyFiles, *files, command=self.open_files)
+		storyDropDown = tk.OptionMenu(commandWrapper, storyFiles, *files,
+									command=self.open_files)
 		storyDropDown.pack(side='left', padx=5, pady=5)
 		
 		""" Status Bar """
-		self.statusBar = tk.Label(self, bd=1, text="Edit the screenplay for each scene", relief="sunken", anchor = "e")
-		self.statusBar.pack(side="bottom", fill="x") # Status bar is copied for each page! TODO: Add it once for all pages!
+		status_text = "Edit the screenplay for each scene"
+		self.statusBar = tk.Label(self, bd=1, text=status_text,
+								relief="sunken", anchor = "e")
+		# Status bar is copied for each page! TODO: Add it once for all pages!
+		self.statusBar.pack(side="bottom", fill="x")
 	"""
 	TODO: Change these methods to global functions to be used.
 	Is it okay to define widgets as a attributes?
