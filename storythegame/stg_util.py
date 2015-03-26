@@ -7,18 +7,24 @@ def keypress():
 	"""
 	import time, msvcrt
 	while 1:
-		if msvcrt.kbhit():				# Key pressed?
-			a = ord(msvcrt.getch())		# get first byte of keyscan code
-			if a == 0 or a == 224:		# is it a function key?
-				msvcrt.getch()			# discard second byte of key scan code
-				return 0				# return 0
+		if msvcrt.kbhit():
+			a = ord(msvcrt.getch())
+			# is it a function key?
+			if a == 0 or a == 224:		
+				# discard second byte of key scan code
+				msvcrt.getch()			
+				return 0
 			else:
-				return a				# else return ascii code
-				
+				return a
+		
+		# TODO implement keypress as an animation
 		#for dot in ['.', '..', '...']:
 		#	print dot
 		#	time.sleep(0.5)
-		time.sleep(0.5)					# reduce CPU workload during while execution
+		
+		# TODO: Validate that time.sleep effects performance
+		# reduce CPU workload during while execution
+		time.sleep(0.5)
 
 def prompt():
 	"""

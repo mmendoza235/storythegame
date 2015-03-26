@@ -2,45 +2,66 @@ import Tkinter as tk
 import tkMessageBox # In Python 3.x, import tkinter.messagebox
 import ttk
 
-import stg
-#import default_stg
-from screenplays import default_stg
+import sys
+import os
+import importlib
 
-file_name = ''
-import_story = "default_stg"
+"""
+Future TODO: Once module is setup, move executable into StoryTheGame/bin
+This will affect the imports!
+	from storythegame import stg, screenplays 
+"""
+
+import stg
+import screenplays
+# TODO: Modify select_game to handle the following module import
+#from screenplays import default_stg
+# TODO: create bin folder for the application code
+
+file_name = ""
+current_game = "default_stg"
+#current_game = "test_stg"
+screenplay_path = "screenplays\\"
 
 def active_games():
 	"""
 	Generates a list of the active games based on the presence
 	of the story modules that create the screenplay objects.
 	"""
-	from os import listdir
-	from os.path import isfile, join, splitext
-	
-	screenplay_path = "screenplays\\"
-	
+	global screenplay_path
 	game_list = []
 	
-	for game_file in listdir(screenplay_path):
-		file_path = join(screenplay_path, game_file)
-		if isfile(file_path) and game_file.endswith('.py') and not game_file.startswith('__init__'):
+	for game_file in os.listdir(screenplay_path):
+		file_path = os.path.join(screenplay_path, game_file)
+		
+		if os.path.isfile(file_path) and game_file.endswith(".py") and not game_file.startswith("__init__"):
 			game_list.append(file_path)
-	
-	print game_list
 	
 	return game_list
 
-def select_game(game_choice):
-	import importlib
-	global import_story
+def select_game(game_choice):	
+	global current_game
+	
+	module_name = "screenplays." + game_choice
+	
+	# Prevent import if the module is already loaded
+	if module_name in sys.modules.keys():
+		# Overrides story object attribute: story_path
+		reload(sys.modules[module_name])
+		current_game = game_choice
+		return
 	
 	try:
-		importlib.import_module(game_choice)
+		importlib.import_module("." + game_choice, "screenplays")
 	except ImportError:
 		print "Failed to import story module"
 		return
 	
-	import_story = game_choice
+	current_game = game_choice
+
+# import the default story module: default_stg
+select_game(current_game)
+#select_game("test_stg")
 
 def about_me():
 	tkMessageBox.showinfo("About Me", "This is merely text.\nNo interaction whatsoever.")
@@ -61,14 +82,23 @@ def story_dict():
 	Builds the dictionary for the screenplay files.
 	Dictionary keyed by the roomName with the file path as the value.
 	"""
+	global current_game
+	global screenplay_path
+	# TODO: Use StringVar.trace(mode='w', callback=story_dict) to update the list
+	screenplay_dir = screenplay_path + current_game[:-4]
+	
 	path_dict = {}
-	for story_object in stg.BaseStory:
-		path_dict[story_object.room_name] = story_object.file_path()
+	for splay_name in os.listdir(screenplay_dir):
+		splay_path = os.path.join(screenplay_dir, splay_name)
+		
+		if os.path.isfile(splay_path) and splay_name.endswith(".txt"):
+			path_dict[splay_name[:-4]] = splay_path
 	
 	return path_dict
 
 def open_files(selection):
 	global file_name
+	
 	file_name = story_dict()[selection]
 	with open(file_name) as f:
 		aboutRoom.delete(1.0, tk.END)
@@ -98,8 +128,11 @@ menubar = tk.Menu(app)
 app.config(menu=menubar)
 
 file_menu = tk.Menu(menubar, tearoff=0)
-file_menu.add_command(label="Start Game", command=default_stg.gameStart.story_intro)
-# TODO: selecting game imports appropriate story_name_stg module
+# TODO: make the module call dynamic
+file_menu.add_command(label="Start Game", command=sys.modules["screenplays." + current_game].gameStart.story_intro)
+#file_menu.add_command(label="Start Game", command=screenplays.test_stg.gameStart.story_intro)
+# TODO: Update this menu with a drop down list mehu and use a StringVar to bind functions select_game and story_dict
+# TODO CONTINUED: Super simple solution- define a function that calls both of them.... how did i not think of that?!
 file_menu.add_command(label="Select Game", command=lambda: select_game("default_stg"))
 
 file_menu.add_separator()
@@ -189,5 +222,4 @@ button1.pack(side='left', padx=5, pady=5)
 """ Status Bar """
 statusLabel = tk.Label(app, bd=1, text='Welcome to Story the Game!', relief='sunken', anchor = 'e')
 statusLabel.pack(side='bottom', fill='x')
-active_games()
 app.mainloop()
