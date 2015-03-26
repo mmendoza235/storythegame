@@ -6,7 +6,7 @@ import stg
 
 # Always import stg and initialize the story_path here.
 # There will always be a gameStart instance to start the game
-#stg.story_path = "screenplays\\default\\"
+stg.story_path = "screenplays\\default\\"
 
 gameStart = stg.BaseStory("gameStart")
 bearRoom = stg.BaseStory("bearRoom")

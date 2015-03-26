@@ -1,0 +1,14 @@
+This is the test chamber.
+You have two choices:
+1. A slow and painful death
+2. A quick and painless death
+PROMPT
+1. GAMEOVER: You don't want to know the details!
+That really was slow and painful!
+STOP
+2. GAMEOVER: A giant laser gun zaps you into oblivion.
+That really was painless!
+STOP
+ELSE: GAMEOVER: You stumble around and fall on a knife and die.
+STOP
+
