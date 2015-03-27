@@ -159,14 +159,14 @@ class StartPage(tk.Frame):
 		welcome.pack(pady=15)
 		
 		buttWrapper = tk.Frame(self)
-		buttWrapper.pack(fill="x")
+		buttWrapper.pack()
 		
 		button1 = ttk.Button(buttWrapper, text="Enter if you dare...",
 							command=lambda: controller.show_frame(PlayGame))
-		button1.pack(side="left", fill="x", expand=1)
+		button1.pack(side="left", padx = 5)
 		
 		button2 = ttk.Button(buttWrapper, text="Exit", command=quit)
-		button2.pack(side="left", fill="x", expand=1)
+		button2.pack(side="left", padx = 5)
 
 class PlayGame(tk.Frame):
 	
@@ -264,14 +264,20 @@ class StoryEdit(tk.Frame):
 
 	def open_files(self, selection):
 		global FILE_NAME
-		FILE_NAME = story_dict()[selection]
+		
+		try:
+			FILE_NAME = story_dict()[selection]
+		except KeyError:
+			self.statusBar.configure(text="Please select a scene.")
+			return
+		
 		with open(FILE_NAME) as f:
 			self.aboutRoom.delete(1.0, tk.END)
 			script_line = ""
-			
+
 			for i in f:
 				script_line += i
-			
+
 			self.aboutRoom.insert(tk.END, script_line)
 		self.statusBar.configure(text="File open: " + selection + ".txt")
 		return
@@ -279,6 +285,11 @@ class StoryEdit(tk.Frame):
 	def game_update(self):
 		# TODO: Use StringVar.trace(mode='w', callback=story_dict) to update the list
 		# This function is a temporary manual refresh tied to a button
+		global FILE_NAME
+		
+		FILE_NAME = ""
+		
+		self.aboutRoom.delete(1.0, tk.END)
 		self.storyFiles.set(None)
 		self.storyDropDown["menu"].delete(0, "end")
 		
