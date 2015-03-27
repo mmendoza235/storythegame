@@ -1,25 +1,77 @@
 import Tkinter as tk
 import ttk
 
-import stg
-#import default_stg
-from screenplays import default_stg
+import os
+import sys
+import importlib
 
-file_name = ''
+import stg
+
+FILE_NAME = ""
+CURRENT_GAME = "default_stg"
+SCREENPLAY_PATH = "screenplays\\"
 
 LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
 
+def select_game(game_choice):	
+	global CURRENT_GAME
+	
+	module_name = "screenplays." + game_choice
+	
+	# Reload if already imported
+	if module_name in sys.modules.keys():
+		# Overrides story object attribute: story_path
+		reload(sys.modules[module_name])
+		CURRENT_GAME = game_choice
+		return
+	
+	try:
+		importlib.import_module("." + game_choice, "screenplays")
+	except ImportError:
+		print "Failed to import story module"
+		return
+	
+	CURRENT_GAME = game_choice
+
+# import the default story module: default_stg
+select_game(CURRENT_GAME)
+
 def story_dict():
-		"""
-		Builds the dictionary for the screenplay files.
-		Dictionary keyed by the roomName with the file path as the value.
-		"""
-		path_dict = {}
-		for story_object in stg.BaseStory:
-			path_dict[story_object.room_name] = story_object.file_path()
+	"""
+	Builds the dictionary for the screenplay files.
+	Dictionary keyed by the roomName with the file path as the value.
+	"""
+	global CURRENT_GAME
+	global SCREENPLAY_PATH
+	# TODO: Use StringVar.trace(mode='w', callback=story_dict) to update the list
+	screenplay_dir = SCREENPLAY_PATH + CURRENT_GAME[:-4]
+	
+	path_dict = {}
+	for splay_name in os.listdir(screenplay_dir):
+		splay_path = os.path.join(screenplay_dir, splay_name)
 		
-		return path_dict
+		if os.path.isfile(splay_path) and splay_name.endswith(".txt"):
+			path_dict[splay_name[:-4]] = splay_path
+	
+	return path_dict
+
+def active_games():
+	"""
+	Generates a list of the active games based on the presence
+	of the story modules that create the screenplay objects.
+	"""
+	global SCREENPLAY_PATH
+	game_list = []
+	
+	for game_file in os.listdir(SCREENPLAY_PATH):
+		file_path = os.path.join(SCREENPLAY_PATH, game_file)
+		
+		py_ext = ".py"
+		if os.path.isfile(file_path) and game_file.endswith(py_ext) and not game_file.startswith("__init__"):
+			game_list.append(game_file[:-len(py_ext)])
+	
+	return game_list
 
 def popup_message(message):
 	popup = tk.Tk()
@@ -51,8 +103,13 @@ class StoryTheGameApp(tk.Tk):
 		
 		filemenu = tk.Menu(menubar, tearoff=0)
 		filemenu.add_command(label="Play the Game", command=lambda: self.show_frame(PlayGame))
-		filemenu.add_command(label="Select Story",
-							command=lambda: popup_message("Not supported yet.\nCreate dropdown list of existing stories."))
+		selectMenu = tk.Menu(filemenu, tearoff=1)
+		
+		for active_game in active_games():
+			selectMenu.add_command(label=active_game[:-4].capitalize(),
+									command=lambda active_game=active_game: select_game(active_game))
+		
+		filemenu.add_cascade(label="Select Game", menu=selectMenu)
 		filemenu.add_separator()
 		filemenu.add_command(label="Exit", command=quit)
 		menubar.add_cascade(label="File", menu=filemenu)
@@ -129,7 +186,8 @@ class PlayGame(tk.Frame):
 		storyInput = tk.Text(inputFrame, height=1, width=30)
 		storyInput.pack(side="left", padx=30, pady=15)
 		
-		submitButt = ttk.Button(inputFrame, text="Enter")
+		submitButt = ttk.Button(inputFrame, text="Enter",
+								command=sys.modules["screenplays." + CURRENT_GAME].gameStart.story_intro)
 		submitButt.pack(side="left")
 		
 		""" Status Bar """
@@ -162,9 +220,12 @@ class StoryEdit(tk.Frame):
 		storyFiles = tk.StringVar()
 		storyFiles.set(None)
 		files = story_dict().keys()
-		storyDropDown = tk.OptionMenu(commandWrapper, storyFiles, *files,
-									command=self.open_files)
+		storyDropDown = ttk.OptionMenu(commandWrapper, storyFiles, *files)
 		storyDropDown.pack(side='left', padx=5, pady=5)
+		
+		openStoryButt = ttk.Button(commandWrapper, text="Open Scene",
+									command=lambda: self.open_files(storyFiles.get()))
+		openStoryButt.pack(side='left', padx=5, pady=5)
 		
 		""" Status Bar """
 		status_text = "Edit the screenplay for each scene"
@@ -177,19 +238,19 @@ class StoryEdit(tk.Frame):
 	Is it okay to define widgets as a attributes?
 	"""
 	def save_script(self):
-		global file_name
-		if file_name:
+		global FILE_NAME
+		if FILE_NAME:
 			script_update = self.aboutRoom.get(1.0, tk.END)
 			
-			with open(file_name, 'w') as f:
+			with open(FILE_NAME, 'w') as f:
 				f.write(script_update)
 		self.statusBar.configure(text="Script saved successfully.")
 		return
 
 	def open_files(self, selection):
-		global file_name
-		file_name = story_dict()[selection]
-		with open(file_name) as f:
+		global FILE_NAME
+		FILE_NAME = story_dict()[selection]
+		with open(FILE_NAME) as f:
 			self.aboutRoom.delete(1.0, tk.END)
 			script_line = ""
 			
