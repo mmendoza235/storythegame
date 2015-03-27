@@ -44,7 +44,7 @@ def story_dict():
 	"""
 	global CURRENT_GAME
 	global SCREENPLAY_PATH
-	# TODO: Use StringVar.trace(mode='w', callback=story_dict) to update the list
+	
 	screenplay_dir = SCREENPLAY_PATH + CURRENT_GAME[:-4]
 	
 	path_dict = {}
@@ -97,6 +97,10 @@ class StoryTheGameApp(tk.Tk):
 		container.pack(side="top", fill="both", expand=True)
 		container.grid_rowconfigure(0, weight=1)
 		container.grid_columnconfigure(0, weight=1)
+		
+		""" Define Style """
+		s = ttk.Style()
+		s.theme_use("clam")
 		
 		""" Menus """
 		menubar = tk.Menu(container)
@@ -151,14 +155,14 @@ class StartPage(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		
-		welcome = ttk.Label(self, text="    Welcome to...\nSTORY THE GAME!", font=LARGE_FONT)
+		welcome = tk.Label(self, text="    Welcome to...\nSTORY THE GAME!", font=LARGE_FONT)
 		welcome.pack(pady=15)
 		
 		buttWrapper = tk.Frame(self)
 		buttWrapper.pack(fill="x")
 		
 		button1 = ttk.Button(buttWrapper, text="Enter if you dare...",
-							command=lambda: controller.show_frame(PlayGame))	# Throwaway function has issues when returning something
+							command=lambda: controller.show_frame(PlayGame))
 		button1.pack(side="left", fill="x", expand=1)
 		
 		button2 = ttk.Button(buttWrapper, text="Exit", command=quit)
@@ -199,13 +203,13 @@ class StoryEdit(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		
-		page_title = ttk.Label(self, text="Edit Story Page", font=LARGE_FONT)
+		page_title = tk.Label(self, text="Edit Story Page", font=LARGE_FONT)
 		page_title.pack(side="top", pady=15)
 		
 		textEditFrame = tk.Frame(self)
 		textEditFrame.pack(fill=tk.BOTH, expand=1, padx=30, pady=30)
 		
-		scrollBar = tk.Scrollbar(textEditFrame)
+		scrollBar = ttk.Scrollbar(textEditFrame)
 		scrollBar.pack(side="right", fill="y")
 		
 		self.aboutRoom = tk.Text(textEditFrame, height=10, yscrollcommand=scrollBar.set)
@@ -217,26 +221,32 @@ class StoryEdit(tk.Frame):
 		commandWrapper = tk.Frame(self)
 		commandWrapper.pack()
 		
-		storyFiles = tk.StringVar()
-		storyFiles.set(None)
+		self.storyFiles = tk.StringVar()
+		self.storyFiles.set(None)
 		files = story_dict().keys()
-		storyDropDown = ttk.OptionMenu(commandWrapper, storyFiles, *files)
-		storyDropDown.pack(side='left', padx=5, pady=5)
+		self.storyDropDown = ttk.OptionMenu(commandWrapper, self.storyFiles,
+										self.storyFiles.get(), *files)
+		self.storyDropDown.pack(side='left', padx=5, pady=5)
 		
 		openStoryButt = ttk.Button(commandWrapper, text="Open Scene",
-									command=lambda: self.open_files(storyFiles.get()))
+									command=lambda: self.open_files(self.storyFiles.get()))
 		openStoryButt.pack(side='left', padx=5, pady=5)
+		
+		saveSceneButt = ttk.Button(commandWrapper, text="Save Scene",
+									command=self.save_script)
+		saveSceneButt.pack(side='left', padx=5, pady=5)
+		
+		refreshButt = ttk.Button(commandWrapper, text="Refresh",
+									command=self.game_update)
+		refreshButt.pack(side='left', padx=5, pady=5)
 		
 		""" Status Bar """
 		status_text = "Edit the screenplay for each scene"
 		self.statusBar = tk.Label(self, bd=1, text=status_text,
-								relief="sunken", anchor = "e")
+									relief="sunken", anchor = "e")
 		# Status bar is copied for each page! TODO: Add it once for all pages!
 		self.statusBar.pack(side="bottom", fill="x")
-	"""
-	TODO: Change these methods to global functions to be used.
-	Is it okay to define widgets as a attributes?
-	"""
+	
 	def save_script(self):
 		global FILE_NAME
 		if FILE_NAME:
@@ -244,7 +254,12 @@ class StoryEdit(tk.Frame):
 			
 			with open(FILE_NAME, 'w') as f:
 				f.write(script_update)
-		self.statusBar.configure(text="Script saved successfully.")
+		
+			file_name = FILE_NAME[len(SCREENPLAY_PATH) + len(CURRENT_GAME[:-3]):]
+			game_name = CURRENT_GAME[:-4].capitalize()
+			self.statusBar.configure(text="%s saved successfully to %s." % (file_name, game_name))
+		else:
+			self.statusBar.configure(text="No file selected. Please select and edit a scene.")
 		return
 
 	def open_files(self, selection):
@@ -260,13 +275,24 @@ class StoryEdit(tk.Frame):
 			self.aboutRoom.insert(tk.END, script_line)
 		self.statusBar.configure(text="File open: " + selection + ".txt")
 		return
+	
+	def game_update(self):
+		# TODO: Use StringVar.trace(mode='w', callback=story_dict) to update the list
+		# This function is a temporary manual refresh tied to a button
+		self.storyFiles.set(None)
+		self.storyDropDown["menu"].delete(0, "end")
+		
+		new_files = story_dict().keys()
+		for file in new_files:
+			self.storyDropDown["menu"].add_command(label=file,
+													command=tk._setit(self.storyFiles, file))
 
 class NewStory(tk.Frame):
 	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		
-		page_title = ttk.Label(self, text="New Story Page", font=LARGE_FONT)
+		page_title = tk.Label(self, text="New Story Page", font=LARGE_FONT)
 		page_title.pack(side="top", pady=15)
 		
 		b_frame_wrapper = tk.Frame(self)
