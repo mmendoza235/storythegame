@@ -18,12 +18,16 @@ game based on recent changes or new additions.
 How to Play---*temporary*
 ------------
 
-### Story the game through the command line:
+### Story the game through python shell:
 
-	1. Choose a story to play from the screenplay folder.
+	1. Choose a story module to play from the screenplay folder.
 		File format: "story_name_stg.py"
-	2. Run the story from the command line:
-		python story_name_stg.py
+	2. From the storythegame directory, start the python shell:
+		python
+	3. Import the desired story module:
+		import screenplays.default_stg as default_stg
+	4. Run the story_intro() method on the desired scene:
+		default_stg.gameStart.story_intro()
 
 ### Story the game through the gui:
 
