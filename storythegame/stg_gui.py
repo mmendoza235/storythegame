@@ -7,6 +7,8 @@ import importlib
 
 import stg
 
+stg.game_mode = "GUI"
+
 FILE_NAME = ""
 CURRENT_GAME = "default_stg"
 SCREENPLAY_PATH = "screenplays\\"
@@ -136,17 +138,13 @@ class StoryTheGameApp(tk.Tk):
 		self.frames = {}
 		
 		for F in (StartPage, PlayGame, StoryEdit, NewStory):
-			
 			frame = F(container, self)
-			
 			self.frames[F] = frame
-			
 			frame.grid(row=0, column=0, sticky="nsew")
 		
 		self.show_frame(StartPage)
 	
 	def show_frame(self, cont):
-		
 		frame = self.frames[cont]
 		frame.tkraise()
 
@@ -180,23 +178,55 @@ class PlayGame(tk.Frame):
 		game_title = tk.Label(outputFrame, text="GAME TITLE HERE")
 		game_title.pack()
 		
-		story_output = tk.Text(outputFrame, height=10)
-		story_output.pack(fill=tk.BOTH, expand=1, padx=20, pady=10)
+		self.storyOutput = tk.Text(outputFrame, height=10, state=tk.DISABLED)
+		self.storyOutput.pack(fill=tk.BOTH, expand=1, padx=20, pady=10)
+		
+		# Display print statements in the GUI
+		sys.stdout = TextRedirector(self.storyOutput)
 		
 		""" User Game Controls """
 		inputFrame = tk.Frame(self)
 		inputFrame.pack()
 		
-		storyInput = tk.Text(inputFrame, height=1, width=30)
-		storyInput.pack(side="left", padx=30, pady=15)
+		self.storyInput = tk.Text(inputFrame, height=1, width=30)
+		self.storyInput.bind("<Return>", self.gui_prompt)
+		self.storyInput.pack(side="left", padx=30, pady=15)
 		
-		submitButt = ttk.Button(inputFrame, text="Enter",
-								command=sys.modules["screenplays." + CURRENT_GAME].gameStart.story_intro)
-		submitButt.pack(side="left")
+		self.submitButt = ttk.Button(inputFrame, text="Enter",
+										command=self.gui_prompt)
+		self.submitButt.pack(side="left")
+		
+		playButt = ttk.Button(inputFrame, text="Play Game",
+								command=self.play_game)
+		playButt.pack(side="left")
 		
 		""" Status Bar """
 		statusBar = tk.Label(self, bd=1, text="Play Story the Game at your own risk", relief="sunken", anchor = "e")
 		statusBar.pack(side="bottom", fill="x")
+		
+	def play_game(self):
+		self.storyOutput.configure(state=tk.NORMAL)
+		self.storyOutput.delete(1.0, tk.END)
+		self.storyOutput.configure(state=tk.DISABLED)
+		
+		sys.modules["screenplays." + CURRENT_GAME].gameStart.story_intro()
+	
+	def gui_prompt(self, event=None):
+		if stg.current_scene:
+			answer = self.storyInput.get(1.0, tk.END)
+			self.storyInput.delete(1.0, tk.END)
+
+			self.storyOutput.configure(state=tk.NORMAL)
+			self.storyOutput.insert(tk.END, answer)
+			self.storyOutput.configure(state=tk.DISABLED)
+
+			answer = answer.strip()
+			sceneInstance = stg.StoryMap().map[stg.current_scene]
+			choice = sceneInstance.user_choice(answer)
+			sceneInstance.story_reduce(answer, choice, stg.gui_script)
+		
+		else:
+			popup_message("Please start a new game.")
 
 class StoryEdit(tk.Frame):
 	
@@ -259,7 +289,10 @@ class StoryEdit(tk.Frame):
 			game_name = CURRENT_GAME[:-4].capitalize()
 			self.statusBar.configure(text="%s saved successfully to %s." % (file_name, game_name))
 		else:
-			self.statusBar.configure(text="No file selected. Please select and edit a scene.")
+			self.statusBar.configure(text="No file selected.")
+			message = """No file selected.
+Please select and open a scene from the list to view/edit"""
+			popup_message(message)
 		return
 
 	def open_files(self, selection):
@@ -268,7 +301,10 @@ class StoryEdit(tk.Frame):
 		try:
 			FILE_NAME = story_dict()[selection]
 		except KeyError:
-			self.statusBar.configure(text="Please select a scene.")
+			self.statusBar.configure(text="No file selected.")
+			message = """No file selected.
+Please select and open a scene from the list to view/edit."""
+			popup_message(message)
 			return
 		
 		with open(FILE_NAME) as f:
@@ -291,7 +327,7 @@ class StoryEdit(tk.Frame):
 		
 		self.aboutRoom.delete(1.0, tk.END)
 		self.storyFiles.set(None)
-		self.storyDropDown["menu"].delete(0, "end")
+		self.storyDropDown["menu"].delete(0, tk.END)
 		
 		new_files = story_dict().keys()
 		for file in new_files:
@@ -321,6 +357,16 @@ class NewStory(tk.Frame):
 		""" Status Bar """
 		statusBar = tk.Label(self, bd=1, text="Create your new story...", relief="sunken", anchor = "e")
 		statusBar.pack(side="bottom", fill="x")
+
+class TextRedirector(object):
+	def __init__(self, widget, tag="stdout"):
+		self.widget = widget
+		self.tag = tag
+	
+	def write(self, str):
+		self.widget.configure(state=tk.NORMAL)
+		self.widget.insert(tk.END, str, (self.tag,))
+		self.widget.configure(state=tk.DISABLED)
 
 app = StoryTheGameApp()
 app.geometry("880x540+50+50")

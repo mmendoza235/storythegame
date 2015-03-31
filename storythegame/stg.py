@@ -1,6 +1,11 @@
-from stg_util import prompt, keypress
-from sys import exit
+import sys
 import random
+
+import stg_util
+
+game_mode = "CMD"
+current_scene = ""
+gui_script = []
 
 """
 Global vars in all caps are used to parse the screenplay files
@@ -93,9 +98,22 @@ class BaseStory(object):
 		"""
 		User prompt code
 		"""
-		answer = prompt()
-		choice = self.user_choice(answer)
-		self.story_reduce(answer, choice, reduced_script)
+		if game_mode == "CMD":
+			answer = stg_util.prompt()
+			choice = self.user_choice(answer)
+			self.story_reduce(answer, choice, reduced_script)
+		
+		elif game_mode == "GUI":
+			global current_scene
+			global gui_script
+			
+			print "--> "
+			current_scene = self.room_name
+			gui_script = reduced_script
+		
+		else:
+			print "Unsupported game mode: %r" % game_mode
+			sys.exit(0)
 	
 	def user_choice(self, answer):
 		"""
@@ -223,7 +241,7 @@ class BaseStory(object):
 		
 		elif PAUSE in line:
 			print line
-			keypress()
+			stg_util.keypress()
 		
 		else:
 			print line
@@ -232,12 +250,17 @@ class BaseStory(object):
 		"""
 		Append custom game over signature.
 		"""
+		global current_scene, gui_script
+		
 		if death:
 			print reason, "Game Over!"
 			# Stop code execution on game over scenario, stops gui as well
-			#exit(0)
+			#sys.exit(0)
 		else:
 			print reason, "You win!"
+		
+		current_scene, gui_script = "", []
+		
 	
 class WhileStory(BaseStory):
 	"""
@@ -306,10 +329,31 @@ class ComparisonStory(BaseStory):
 		
 		elif PAUSE in line:
 			print line
-			keypress()
+			stg_util.keypress()
 		
 		else:
 			print line
+	
+	def story_prompt(self, reduced_script):
+		"""
+		User prompt code
+		"""		
+		if game_mode == "CMD":
+			answer = stg_util.prompt("[Enter a number]: ")
+			choice = self.user_choice(answer)
+			self.story_reduce(answer, choice, reduced_script)
+		
+		elif game_mode == "GUI":
+			global current_scene
+			global gui_script
+			
+			print "[Enter a number]: "
+			current_scene = self.room_name
+			gui_script = reduced_script
+		
+		else:
+			print "Unsupported game mode: %r" % game_mode
+			sys.exit(0)
 	
 	def comparison(self, answer):
 		if answer >= self.compare_num:

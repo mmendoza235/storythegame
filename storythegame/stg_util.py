@@ -26,10 +26,10 @@ def keypress():
 		# reduce CPU workload during while execution
 		time.sleep(0.5)
 
-def prompt():
+def prompt(custom_prompt="--> "):
 	"""
 	Simple raw_input with custom prompt.
 	Returns the raw_input
 	"""
-	answer = raw_input('--> ').lower()
+	answer = raw_input(custom_prompt).lower()
 	return answer
