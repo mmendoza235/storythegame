@@ -11,8 +11,9 @@ import screenplays.default_stg
 stg.game_mode = "GUI"
 
 FILE_NAME = ""
-#CURRENT_GAME = "default_stg"
 SCREENPLAY_PATH = "screenplays\\"
+KEY_PRESSED = False
+PAUSE_ANIMATION = ['.', '..', '...']
 
 LARGE_FONT = ("Verdana", 12)
 NORM_FONT = ("Verdana", 10)
@@ -46,11 +47,8 @@ def popup_message(message):
 	popup.mainloop()
 
 class StoryTheGameApp(tk.Tk):
-	
 	def __init__(self, *args, **kwargs):
-		
 		tk.Tk.__init__(self, *args, **kwargs)
-		
 		tk.Tk.iconbitmap(self, default="image\\stg.ico")
 		tk.Tk.wm_title(self, "Story The Game")
 		
@@ -80,6 +78,8 @@ class StoryTheGameApp(tk.Tk):
 		
 		filemenu.add_cascade(label="Select Game", menu=selectMenu)
 		filemenu.add_separator()
+		filemenu.add_command(label="TEST WINDOW", command=lambda: self.show_frame(TestWindow))
+		filemenu.add_separator()
 		filemenu.add_command(label="Exit", command=quit)
 		menubar.add_cascade(label="File", menu=filemenu)
 		
@@ -100,7 +100,7 @@ class StoryTheGameApp(tk.Tk):
 		""" Frame Setup! """
 		self.frames = {}
 		
-		for F in (StartPage, PlayGame, StoryEdit, NewStory):
+		for F in (StartPage, PlayGame, StoryEdit, NewStory, TestWindow):
 			frame = F(container, self)
 			self.frames[F] = frame
 			frame.grid(row=0, column=0, sticky="nsew")
@@ -146,9 +146,17 @@ class StoryTheGameApp(tk.Tk):
 				path_dict[splay_name[:-4]] = splay_path
 
 		return path_dict
+	
+	def key_pressed(self, event, *args):
+		global KEY_PRESSED
+		
+		if event.char:
+			KEY_PRESSED = True
+		
+		else:
+			return
 
 class StartPage(tk.Frame):
-	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		self.controller = controller
@@ -167,7 +175,6 @@ class StartPage(tk.Frame):
 		button2.pack(side="left", padx = 5)
 
 class PlayGame(tk.Frame):
-	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		self.controller = controller
@@ -191,6 +198,7 @@ class PlayGame(tk.Frame):
 		
 		self.storyInput = tk.Text(inputFrame, height=1, width=30)
 		self.storyInput.bind("<Return>", self.gui_prompt)
+		self.storyInput.bind("<Key>", self.controller.key_pressed)
 		self.storyInput.pack(side="left", padx=30, pady=15)
 		
 		self.submitButt = ttk.Button(inputFrame, text="Enter",
@@ -219,7 +227,7 @@ class PlayGame(tk.Frame):
 		current_game = self.controller.currentGame.get()
 		sys.modules["screenplays." + current_game].gameStart.story_intro()
 	
-	def gui_prompt(self, event=None):
+	def gui_prompt(self, event):
 		if stg.current_scene:
 			answer = self.storyInput.get(1.0, tk.END)
 			self.storyInput.delete(1.0, tk.END)
@@ -245,7 +253,6 @@ class PlayGame(tk.Frame):
 		self.gameTitle.configure(text=game_title)
 
 class StoryEdit(tk.Frame):
-	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		self.controller = controller
@@ -349,13 +356,27 @@ Please select and open a scene from the list to view/edit."""
 													command=tk._setit(self.storyFiles, file))
 
 class NewStory(tk.Frame):
-	
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self, parent)
 		self.controller = controller
 		
 		page_title = tk.Label(self, text="New Story Page", font=LARGE_FONT)
 		page_title.pack(side="top", pady=15)
+		
+		""" Status Bar """
+		statusBar = tk.Label(self, bd=1, text="Create your new story...", relief="sunken", anchor = "e")
+		statusBar.pack(side="bottom", fill="x")
+		
+		""" New Story Update Function """
+		self.controller.currentGame.trace("w", callback=self.new_update)
+		
+	def new_update(self, *args):
+		pass
+
+class TestWindow(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+		self.controller = controller
 		
 		b_frame_wrapper = tk.Frame(self)
 		#b_frame_wrapper = ttk.Labelframe(self, text="button frame wrapper")
@@ -370,14 +391,8 @@ class NewStory(tk.Frame):
 		button2.pack(side="left", padx=20, pady=20)
 		
 		""" Status Bar """
-		statusBar = tk.Label(self, bd=1, text="Create your new story...", relief="sunken", anchor = "e")
+		statusBar = tk.Label(self, bd=1, text="Test window...", relief="sunken", anchor = "e")
 		statusBar.pack(side="bottom", fill="x")
-		
-		""" New Story Update Function """
-		self.controller.currentGame.trace("w", callback=self.new_update)
-		
-	def new_update(self, *args):
-		pass
 
 class TextRedirector(object):
 	def __init__(self, widget, tag="stdout"):
@@ -385,8 +400,18 @@ class TextRedirector(object):
 		self.tag = tag
 	
 	def write(self, str):
+		global KEY_PRESSED
+		
 		self.widget.configure(state=tk.NORMAL)
-		self.widget.insert(tk.END, str, (self.tag,))
+		
+		if stg.PAUSE not in str:
+			self.widget.insert(tk.END, str, (self.tag,))
+		# Temporary solution: TODO: User key press should print story
+		else:
+			self.widget.insert(tk.END, str, (self.tag,))
+		
+		KEY_PRESSED = False
+		
 		self.widget.configure(state=tk.DISABLED)
 
 app = StoryTheGameApp()

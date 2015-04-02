@@ -222,6 +222,12 @@ class BaseStory(object):
 			else:
 				self.story_print(line, answer)
 	
+	def story_pause(self):
+		if game_mode == "CMD":
+			stg_util.keypress()
+		else:
+			return
+	
 	def story_print(self, line, answer=''):
 		"""
 		Modify the print execution based on the presence of:
@@ -241,7 +247,7 @@ class BaseStory(object):
 		
 		elif PAUSE in line:
 			print line
-			stg_util.keypress()
+			self.story_pause()
 		
 		else:
 			print line
@@ -260,7 +266,6 @@ class BaseStory(object):
 			print reason, "You win!"
 		
 		current_scene, gui_script = "", []
-		
 	
 class WhileStory(BaseStory):
 	"""
@@ -329,7 +334,7 @@ class ComparisonStory(BaseStory):
 		
 		elif PAUSE in line:
 			print line
-			stg_util.keypress()
+			self.story_pause()
 		
 		else:
 			print line
