@@ -227,7 +227,7 @@ class PlayGame(tk.Frame):
 		current_game = self.controller.currentGame.get()
 		sys.modules["screenplays." + current_game].gameStart.story_intro()
 	
-	def gui_prompt(self, event):
+	def gui_prompt(self, event=''):
 		if stg.current_scene:
 			answer = self.storyInput.get(1.0, tk.END)
 			self.storyInput.delete(1.0, tk.END)
