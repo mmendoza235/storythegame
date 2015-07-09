@@ -11,4 +11,3 @@ GAMEOVER: That really was painless!
 STOP
 ELSE: GAMEOVER: You stumble around and fall on a knife and die.
 STOP
-

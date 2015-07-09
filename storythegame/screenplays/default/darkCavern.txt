@@ -32,5 +32,3 @@ You can't make up your mind and decide to sit down to rest.
 You sit down for the next 47 years until you're too old to do anything.
 GAMEOVER: You are dead!
 STOP
-
-

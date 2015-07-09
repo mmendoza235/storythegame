@@ -14,4 +14,3 @@ CONTINUE: gameStart
 STOP
 ELSE: GAMEOVER: The insanity rots your eyes into a pool of muck.
 STOP
-

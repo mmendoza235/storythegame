@@ -38,5 +38,3 @@ STOP
 ELSE: "That doesn't answer my question!"
 GAMEOVER: You spontaniously combust.
 STOP
-
-

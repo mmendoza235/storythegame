@@ -10,18 +10,18 @@ def keypress():
 		if msvcrt.kbhit():
 			a = ord(msvcrt.getch())
 			# is it a function key?
-			if a == 0 or a == 224:		
+			if a == 0 or a == 224:
 				# discard second byte of key scan code
-				msvcrt.getch()			
+				msvcrt.getch()
 				return 0
 			else:
 				return a
-		
+
 		# TODO implement keypress as an animation
 		#for dot in ['.', '..', '...']:
 		#	print dot
 		#	time.sleep(0.5)
-		
+
 		# TODO: Validate that time.sleep effects performance
 		# reduce CPU workload during while execution
 		time.sleep(0.5)
