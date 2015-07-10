@@ -10,4 +10,4 @@ stg.story_path = "screenplays\\test\\"
 
 gameStart = stg.BaseStory("gameStart")
 
-#gameStart.story_intro()
+# gameStart.story_intro()

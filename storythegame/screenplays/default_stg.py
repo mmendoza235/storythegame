@@ -20,4 +20,4 @@ treasureRoom.story_item = 'sword'
 unknownDoor = stg.BaseStory("unknownDoor")
 trapDoor = stg.BaseStory("trapDoor")
 
-#gameStart.story_intro()
+# gameStart.story_intro()
