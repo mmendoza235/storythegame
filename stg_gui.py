@@ -5,7 +5,7 @@ import os
 import sys
 import importlib
 
-from storythegame import stg
+from storythegame import stg, stg_util
 import storythegame.screenplays.default_stg
 
 stg.game_mode = "GUI"
@@ -52,7 +52,7 @@ def popup_message(message):
 class StoryTheGameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        tk.Tk.iconbitmap(self, default=os.path.curdir + "\\storythegame\\image\\stg.ico")
+        tk.Tk.iconbitmap(self, default=stg_util.get_file_path() + "image\\stg.ico")
         tk.Tk.wm_title(self, "Story The Game")
 
         container = tk.Frame(self)
@@ -431,7 +431,8 @@ class TextRedirector(object):
 
         self.widget.configure(state=tk.DISABLED)
 
-app = StoryTheGameApp()
-app.geometry("880x540+50+50")
-app.minsize(525, 300)
-app.mainloop()
+if __name__ == "__main__":
+    app = StoryTheGameApp()
+    app.geometry("880x540+50+50")
+    app.minsize(525, 300)
+    app.mainloop()

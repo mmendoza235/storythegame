@@ -1,6 +1,10 @@
-# keypress function modified form code.activestate.com/recipes/...
+import inspect
+import os.path
+
+
 def keypress():
-    """
+    """keypress function modified form code.activestate.com/recipes/...
+
     Waits for the user to press a key. Returns the ascii code
     for the key pressed or zero for a function key pressed.
     Aborts function with CTL-C
@@ -36,3 +40,15 @@ def prompt(custom_prompt="--> "):
     """
     answer = raw_input(custom_prompt).lower()
     return answer
+
+
+def get_file_path(current_file='', sub_dir=''):
+    util_path = os.path.dirname(inspect.getabsfile(inspect.currentframe()))
+    if current_file == '':
+        return util_path + "\\"
+    elif sub_dir == '':
+        current_file = os.path.join(util_path, current_file) + "\\"
+    else:
+        current_file = os.path.join(util_path, sub_dir, current_file) + "\\"
+
+    return current_file
