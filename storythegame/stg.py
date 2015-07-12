@@ -1,4 +1,5 @@
 import sys
+import os
 import random
 
 import stg_util
@@ -33,8 +34,8 @@ HAS_ITEM = "+++"
 NO_ITEM = "---"
 
 # Default story path defined here.
-# Override in story_name.py for custom story
-story_path = "screenplays\\default\\"
+# Override in story_name_stg.py for custom story
+story_path = os.path.curdir + "\\screenplays\\default\\"
 
 
 class IterRegistry(type):

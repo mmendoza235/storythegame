@@ -5,13 +5,13 @@ import os
 import sys
 import importlib
 
-import stg
-import screenplays.default_stg
+from storythegame import stg
+import storythegame.screenplays.default_stg
 
 stg.game_mode = "GUI"
 
 FILE_NAME = ""
-SCREENPLAY_PATH = "screenplays\\"
+SCREENPLAY_DIR = "C:\\Users\\Miguel A Mendoza\\Desktop\\practice_code\\python\\projects\\StoryTheGame\\src\\storythegame\\screenplays\\"
 KEY_PRESSED = False
 PAUSE_ANIMATION = ['.', '..', '...']
 
@@ -24,11 +24,11 @@ def active_games():
     Generates a list of the active games based on the presence
     of the story modules that create the screenplay objects.
     """
-    global SCREENPLAY_PATH
+    global SCREENPLAY_DIR
     game_list = []
 
-    for game_file in os.listdir(SCREENPLAY_PATH):
-        file_path = os.path.join(SCREENPLAY_PATH, game_file)
+    for game_file in os.listdir(SCREENPLAY_DIR):
+        file_path = os.path.join(SCREENPLAY_DIR, game_file)
 
         py_ext = ".py"
         if os.path.isfile(file_path) and game_file.endswith(py_ext) and not game_file.startswith("__init__"):
@@ -52,7 +52,7 @@ def popup_message(message):
 class StoryTheGameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        tk.Tk.iconbitmap(self, default="image\\stg.ico")
+        tk.Tk.iconbitmap(self, default=os.path.curdir + "\\storythegame\\image\\stg.ico")
         tk.Tk.wm_title(self, "Story The Game")
 
         container = tk.Frame(self)
@@ -122,7 +122,7 @@ class StoryTheGameApp(tk.Tk):
         frame.tkraise()
 
     def select_game(self, game_choice):
-        module_name = "screenplays." + game_choice
+        module_name = "storythegame.screenplays." + game_choice
 
         # Reload if already imported
         if module_name in sys.modules.keys():
@@ -132,7 +132,7 @@ class StoryTheGameApp(tk.Tk):
             return
 
         try:
-            importlib.import_module("." + game_choice, "screenplays")
+            importlib.import_module("." + game_choice, "storythegame.screenplays")
         except ImportError:
             print "Failed to import story module"
             return
@@ -144,9 +144,9 @@ class StoryTheGameApp(tk.Tk):
         Builds the dictionary for the screenplay files.
         Dictionary keyed by the roomName with the file path as the value.
         """
-        global SCREENPLAY_PATH
+        global SCREENPLAY_DIR
 
-        screenplay_dir = SCREENPLAY_PATH + self.currentGame.get()[:-4]
+        screenplay_dir = SCREENPLAY_DIR + self.currentGame.get()[:-4]
 
         path_dict = {}
         for splay_name in os.listdir(screenplay_dir):
@@ -238,7 +238,7 @@ class PlayGame(tk.Frame):
         self.clear_content()
 
         current_game = self.controller.currentGame.get()
-        sys.modules["screenplays." + current_game].gameStart.story_intro()
+        sys.modules["storythegame.screenplays." + current_game].gameStart.story_intro()
 
     def gui_prompt(self, event=''):
         if stg.current_scene:
@@ -322,7 +322,7 @@ class StoryEdit(tk.Frame):
             with open(FILE_NAME, 'w') as f:
                 f.write(script_update)
 
-            file_name = FILE_NAME[len(SCREENPLAY_PATH) + len(CURRENT_GAME[:-3]):]
+            file_name = FILE_NAME[len(SCREENPLAY_DIR) + len(CURRENT_GAME[:-3]):]
             game_name = CURRENT_GAME[:-4].capitalize()
             self.statusBar.configure(text="%s saved successfully to %s." % (file_name, game_name))
         else:
