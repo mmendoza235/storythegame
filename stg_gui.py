@@ -11,7 +11,7 @@ import storythegame.screenplays.default_stg
 stg.game_mode = "GUI"
 
 FILE_NAME = ""
-SCREENPLAY_DIR = "C:\\Users\\Miguel A Mendoza\\Desktop\\practice_code\\python\\projects\\StoryTheGame\\src\\storythegame\\screenplays\\"
+SCREENPLAY_DIR = stg_util.get_file_path("screenplays")
 KEY_PRESSED = False
 PAUSE_ANIMATION = ['.', '..', '...']
 
@@ -52,7 +52,7 @@ def popup_message(message):
 class StoryTheGameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        tk.Tk.iconbitmap(self, default=stg_util.get_file_path() + "image\\stg.ico")
+        tk.Tk.iconbitmap(self, default=stg_util.get_file_path("image") + "stg.ico")
         tk.Tk.wm_title(self, "Story The Game")
 
         container = tk.Frame(self)

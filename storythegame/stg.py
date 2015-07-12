@@ -34,7 +34,7 @@ NO_ITEM = "---"
 
 # Default story path defined here.
 # Override in story_name_stg.py for custom story
-story_path = stg_util.get_file_path() + "\\screenplays\\default\\"
+story_path = stg_util.get_file_path("screenplays", "default")
 
 
 class IterRegistry(type):

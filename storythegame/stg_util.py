@@ -42,13 +42,15 @@ def prompt(custom_prompt="--> "):
     return answer
 
 
-def get_file_path(current_file='', sub_dir=''):
+def get_file_path(*dirs):
+    """
+    Return the appropriate path by mimicking os.path's join method.
+    Defaults to the parent directory for the package if no parameter is passed.
+    """
     util_path = os.path.dirname(inspect.getabsfile(inspect.currentframe()))
-    if current_file == '':
+    try:
+        dirs[0]
+    except NameError:
         return util_path + "\\"
-    elif sub_dir == '':
-        current_file = os.path.join(util_path, current_file) + "\\"
-    else:
-        current_file = os.path.join(util_path, sub_dir, current_file) + "\\"
 
-    return current_file
+    return os.path.join(util_path, *dirs) + "\\"
