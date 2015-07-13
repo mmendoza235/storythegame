@@ -1,4 +1,6 @@
 from nose.tools import *
+import inspect
+import os
 import storythegame.stg
 
 
