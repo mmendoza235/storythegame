@@ -1,23 +1,36 @@
 from nose.tools import *
 import inspect
 import os
+
+import custom_test_util as ctu
 import stg_gui
 
 
 def setup():
-    print "SETUP!"
+    ctu.output_divider(setup.__name__, 'SETTING UP!')
 
-
-def teardown():
-    print "TEAR DOWN!"
-
-
-def test_screenplay_modules_for_associated_directories():
+    global py_ext, module_ext, slash, screenplay_dir
     py_ext, module_ext, slash = ".py", "_stg", "\\"
-    game_list, dir_list = [], []
 
     current_dir = os.path.dirname(inspect.getabsfile(inspect.currentframe()))
     screenplay_dir = os.path.join(current_dir.replace('\\tests', ''), 'storythegame', 'screenplays')
+
+    ctu.output_divider(setup.__name__, 'DONE SETTING UP!')
+
+
+def teardown():
+    ctu.output_divider(teardown.__name__, 'TEARING DOWN!')
+
+    global py_ext, module_ext, slash, screenplay_dir
+    del py_ext, module_ext, slash, screenplay_dir
+
+    ctu.output_divider(teardown.__name__, 'DONE TEARING DOWN!')
+
+
+def test_screenplay_modules_for_associated_directories():
+    ctu.output_divider(test_screenplay_modules_for_associated_directories.__name__, 'START')
+
+    game_list, dir_list = [], []
 
     for game_file in os.listdir(screenplay_dir):
         file_path = os.path.join(screenplay_dir, game_file)
@@ -31,3 +44,5 @@ def test_screenplay_modules_for_associated_directories():
 
     print "game list: ", game_list, " and dir list: ", dir_list
     assert game_list == dir_list
+
+    ctu.output_divider(test_screenplay_modules_for_associated_directories.__name__, 'FINISH')
