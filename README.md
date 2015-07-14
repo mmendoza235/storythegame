@@ -15,21 +15,21 @@ game based on recent changes or new additions.
 * Easy to use editing interface to craft each individual scene.
 * Define customized items that can alter the outcome of the story.
 
-How to Play---*temporary*
+How to Play
 ------------
 
 ### Story the game through python shell:
 
 	1. Choose a story module to play from the screenplay folder.
 		File format: "story_name_stg.py"
-	2. From the storythegame directory, start the python shell:
+	2. Start the python shell:
 		python
 	3. Import the desired story module:
-		import screenplays.default_stg as default_stg
+		from storythegame.screenplays import default_stg
 	4. Run the story_intro() method on the desired scene:
 		default_stg.gameStart.story_intro()
 
 ### Story the game through the gui:
 
 	1. Run the gui file via the command line.
-		python stg_gui.py
+		python ./stg_gui.py

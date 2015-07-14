@@ -262,11 +262,11 @@ class BaseStory(object):
 
         if death:
             print reason, "Game Over!"
-            # Stop code execution on game over scenario, stops gui as well
-            # sys.exit(0)
+
         else:
             print reason, "You win!"
 
+        # Stop story execution
         current_scene, gui_script = "", []
 
 
