@@ -52,7 +52,7 @@ def test_verify_default_story_path():
     print "stg story path: ", stg_story_path
     print "test story path: ", test_story_path
 
-    assert stg_story_path == test_story_path
+    assert_equal(stg_story_path, test_story_path)
 
     ctu.output_divider(test_verify_default_story_path.__name__, 'FINISH')
 
@@ -61,8 +61,7 @@ def test_mapping_class():
     ctu.output_divider(test_mapping_class.__name__, 'START')
 
     for num in range(len(screenplay_map)):
-        assert stg.StoryMap().map[screenplay_map[num].room_name] == \
-            screenplay_map[num]
+        assert_equal(stg.StoryMap().map[screenplay_map[num].room_name], screenplay_map[num])
 
     ctu.output_divider(test_mapping_class.__name__, 'FINISH')
 
@@ -77,5 +76,6 @@ def test_default_screenplay_files_for_content():
         print screenplay_script, "\n"
 
         assert screenplay_script
+        assert_is_instance(screenplay_script, list)
 
     ctu.output_divider(test_default_screenplay_files_for_content.__name__, 'FINISH')

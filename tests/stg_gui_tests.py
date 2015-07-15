@@ -43,6 +43,6 @@ def test_screenplay_modules_for_associated_directories():
             dir_list.append(split_path[-1])
 
     print "game list: ", game_list, " and dir list: ", dir_list
-    assert game_list == dir_list
+    assert_equal(game_list, dir_list)
 
     ctu.output_divider(test_screenplay_modules_for_associated_directories.__name__, 'FINISH')
