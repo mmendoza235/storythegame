@@ -11,16 +11,14 @@ gui_script = []
 Global vars in all caps are used to parse the screenplay files
 TODO: create GUI to generate/write screenplay files
 """
-ONE = "1. "
-TWO = "2. "
-THREE = "3. "
 DOOR_CHOICES = {
-    ONE: ['1', '#1', 'one'],
-    TWO: ['2', '#2', 'two'],
-    THREE: ['3', '#3', 'three'],
-    "4. ": ['4', '#4', 'four'],
-    "5. ": ['5', '#5', 'five']
+    0: ['1', '#1', 'one'],
+    1: ['2', '#2', 'two'],
+    2: ['3', '#3', 'three'],
+    3: ['4', '#4', 'four'],
+    4: ['5', '#5', 'five']
 }
+CHOICE = ['1. ', '2. ', '3. ', '4. ', '5. ']
 PROMPT = "PROMPT"
 GAMEOVER = "GAMEOVER: "
 WINNER = "GG: "
@@ -105,7 +103,7 @@ class BaseStory(object):
             choice = self.user_choice(answer)
             self.story_reduce(answer, choice, reduced_script)
 
-        elif game_mode == "GUI":
+        elif ((game_mode == "GUI") or (game_mode == "TEST")):
             global current_scene
             global gui_script
 
@@ -121,9 +119,10 @@ class BaseStory(object):
         """
         Parse user input and return relevant dictionary index
         """
+        answer = answer.strip()
         for key, value in DOOR_CHOICES.iteritems():
             if answer in value:
-                return key
+                return CHOICE[key]
 
         # Default to the else scenario for invalid answer.
         return ELSE
@@ -352,7 +351,7 @@ class ComparisonStory(BaseStory):
             choice = self.user_choice(answer)
             self.story_reduce(answer, choice, reduced_script)
 
-        elif game_mode == "GUI":
+        elif ((game_mode == "GUI") or (game_mode == "TEST")):
             global current_scene
             global gui_script
 
@@ -366,13 +365,13 @@ class ComparisonStory(BaseStory):
 
     def comparison(self, answer):
         if answer >= self.compare_num:
-            choice = ONE
+            choice = CHOICE[0]
 
         elif answer == 0:
-            choice = THREE
+            choice = CHOICE[2]
 
         elif answer < self.compare_num:
-            choice = TWO
+            choice = CHOICE[1]
 
         else:
             choice = ELSE

@@ -249,7 +249,6 @@ class PlayGame(tk.Frame):
             self.storyOutput.insert(tk.END, answer)
             self.storyOutput.configure(state=tk.DISABLED)
 
-            answer = answer.strip()
             sceneInstance = stg.StoryMap().map[stg.current_scene]
             choice = sceneInstance.user_choice(answer)
             sceneInstance.story_reduce(answer, choice, stg.gui_script)

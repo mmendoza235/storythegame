@@ -8,6 +8,9 @@ import storythegame.stg as stg
 
 def setup():
     ctu.output_divider(setup.__name__, 'SETTING UP!')
+
+    stg.game_mode = "TEST"
+
     global screenplay_dir
 
     current_dir = os.path.dirname(inspect.getabsfile(inspect.currentframe()))
@@ -79,3 +82,28 @@ def test_default_screenplay_files_for_content():
         assert_is_instance(screenplay_script, list)
 
     ctu.output_divider(test_default_screenplay_files_for_content.__name__, 'FINISH')
+
+
+def test_default_story_playthrough():
+    ctu.output_divider(test_default_story_playthrough.__name__, 'START')
+
+    user_input = {
+        'Final room, no sword, all treasure': [['1', 'bearRoom'], ['3', 'bearGrills'], ['1', 'darkCavern'], ['3', 'strangeLight'], ['1', 'treasureRoom'], ['10000', '']],
+        'Final room, sword, all treasure': [['3', 'fancyHallway'], ['1', 'unknownDoor'], ['2', 'darkCavern'], ['3', 'strangeLight'], ['1', 'treasureRoom'], ['10000', '']],
+        'Final room, sword, too little treasure': [['3', 'fancyHallway'], ['1', 'unknownDoor'], ['2', 'darkCavern'], ['3', 'strangeLight'], ['1', 'treasureRoom'], ['10', '']]
+    }
+
+    for key, value in user_input.iteritems():
+        ctu.output_divider('Testing scenario', key)
+
+        screenplay_map[0].story_intro()
+
+        for num in range(len(value)):
+            sceneInstance = stg.StoryMap().map[stg.current_scene]
+            answer = value[num][0]
+            choice = sceneInstance.user_choice(answer)
+            sceneInstance.story_reduce(answer, choice, stg.gui_script)
+
+            assert_equal(stg.current_scene, value[num][1])
+
+    ctu.output_divider(test_default_story_playthrough.__name__, 'FINISH')
