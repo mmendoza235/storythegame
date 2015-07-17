@@ -96,6 +96,7 @@ def test_default_story_playthrough():
     for key, value in user_input.iteritems():
         ctu.output_divider('Testing scenario', key)
 
+        # gameStart screenplay
         screenplay_map[0].story_intro()
 
         for num in range(len(value)):
@@ -107,3 +108,59 @@ def test_default_story_playthrough():
             assert_equal(stg.current_scene, value[num][1])
 
     ctu.output_divider(test_default_story_playthrough.__name__, 'FINISH')
+
+
+def test_while_story():
+    ctu.output_divider(test_while_story.__name__, 'START')
+
+    user_input = [
+        ['toast', 'bearGrills'], ['no!', 'bearGrills'], ['wrong!', 'bearGrills'], ['invalid answer', 'bearGrills'], ['2', '']
+    ]
+
+    # bearGrills screenplay
+    screenplay_map[4].story_intro()
+
+    for num in range(len(user_input)):
+        sceneInstance = stg.StoryMap().map[stg.current_scene]
+        answer = user_input[num][0]
+        choice = sceneInstance.user_choice(answer)
+        sceneInstance.story_reduce(answer, choice, stg.gui_script)
+
+        assert_equal(stg.current_scene, user_input[num][1])
+
+    ctu.output_divider(test_while_story.__name__, 'FINISH')
+
+
+def test_valid_user_input():
+    ctu.output_divider(test_valid_user_input.__name__, 'START')
+
+    user_input = {
+        'BaseStory test (gameStart)': [['oNe', 'bearRoom'], ['ONE', 'bearRoom'], ['   one  ', 'bearRoom'], [' on e ', ''], ['1. ', ''], ['won', ''], ['toast', ''], ['10000', '']],
+        'WhileStory test (bearGrills)': [['oNe', 'darkCavern'], ['ONE', 'darkCavern'], ['   one  ', 'darkCavern'], [' on e ', 'bearGrills'], ['1. ', 'bearGrills'], ['won', 'bearGrills'], ['toast', 'bearGrills'], ['10000', 'bearGrills']],
+        'CompareStory test (treasureRoom)': [['oNe', ''], ['ONE', ''], ['   one  ', ''], [' on e ', ''], ['1. ', ''], ['won', ''], ['toast', ''], ['10000', '']]
+    }
+
+    class_dict = {
+        'BaseStory test (gameStart)': screenplay_map[0],
+        'WhileStory test (bearGrills)': screenplay_map[4],
+        'CompareStory test (treasureRoom)': screenplay_map[7]
+    }
+
+    for key, value in user_input.iteritems():
+        ctu.output_divider(key, 'Starting Test')
+
+        for num in range(len(value)):
+            subtitle = "User input test: %r" % value[num][0]
+            ctu.output_divider(key, subtitle)
+
+            class_dict[key].story_intro()
+            sceneInstance = stg.StoryMap().map[stg.current_scene]
+            answer = value[num][0]
+            choice = sceneInstance.user_choice(answer)
+            sceneInstance.story_reduce(answer, choice, stg.gui_script)
+
+            assert_equal(stg.current_scene, value[num][1])
+
+        ctu.output_divider(key, 'Finished Test')
+
+    ctu.output_divider(test_valid_user_input.__name__, 'FINISH')

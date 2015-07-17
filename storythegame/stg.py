@@ -121,7 +121,7 @@ class BaseStory(object):
         """
         answer = answer.strip()
         for key, value in DOOR_CHOICES.iteritems():
-            if answer in value:
+            if answer.lower() in value:
                 return CHOICE[key]
 
         # Default to the else scenario for invalid answer.
