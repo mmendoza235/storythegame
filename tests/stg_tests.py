@@ -23,16 +23,16 @@ def setup():
     treasureRoom = stg.ComparisonStory("treasureRoom", 10000)
     treasureRoom.story_item = 'sword'
 
-    screenplay_map.append(stg.BaseStory("gameStart"))
-    screenplay_map.append(stg.BaseStory("bearRoom"))
-    screenplay_map.append(stg.BaseStory("insaneRoom"))
-    screenplay_map.append(stg.BaseStory("fancyHallway"))
-    screenplay_map.append(stg.WhileStory("bearGrills"))
-    screenplay_map.append(stg.BaseStory("darkCavern"))
-    screenplay_map.append(stg.BaseStory("strangeLight"))
-    screenplay_map.append(treasureRoom)
-    screenplay_map.append(stg.BaseStory("unknownDoor"))
-    screenplay_map.append(stg.BaseStory("trapDoor"))
+    screenplay_map.append(stg.BaseStory("gameStart"))       # index: 0
+    screenplay_map.append(stg.BaseStory("bearRoom"))        # index: 1
+    screenplay_map.append(stg.BaseStory("insaneRoom"))      # index: 2
+    screenplay_map.append(stg.BaseStory("fancyHallway"))    # index: 3
+    screenplay_map.append(stg.WhileStory("bearGrills"))     # index: 4
+    screenplay_map.append(stg.BaseStory("darkCavern"))      # index: 5
+    screenplay_map.append(stg.BaseStory("strangeLight"))    # index: 6
+    screenplay_map.append(treasureRoom)                     # index: 7
+    screenplay_map.append(stg.BaseStory("unknownDoor"))     # index: 8
+    screenplay_map.append(stg.BaseStory("trapDoor"))        # index: 9
 
     ctu.output_divider(setup.__name__, 'DONE SETTING UP!')
 
@@ -135,9 +135,9 @@ def test_valid_user_input():
     ctu.output_divider(test_valid_user_input.__name__, 'START')
 
     user_input = {
-        'BaseStory test (gameStart)': [['oNe', 'bearRoom'], ['ONE', 'bearRoom'], ['   one  ', 'bearRoom'], [' on e ', ''], ['1. ', ''], ['won', ''], ['toast', ''], ['10000', '']],
-        'WhileStory test (bearGrills)': [['oNe', 'darkCavern'], ['ONE', 'darkCavern'], ['   one  ', 'darkCavern'], [' on e ', 'bearGrills'], ['1. ', 'bearGrills'], ['won', 'bearGrills'], ['toast', 'bearGrills'], ['10000', 'bearGrills']],
-        'CompareStory test (treasureRoom)': [['oNe', ''], ['ONE', ''], ['   one  ', ''], [' on e ', ''], ['1. ', ''], ['won', ''], ['toast', ''], ['10000', '']]
+        'BaseStory test (gameStart)': [['oNe', '1. '], ['ONE', '1. '], ['   one  ', '1. '], [' on e ', 'ELSE: '], ['1. ', 'ELSE: '], ['won', 'ELSE: '], ['toast', 'ELSE: '], ['10000', 'ELSE: '], ['1', '1. '], ['0', 'ELSE: ']],
+        'WhileStory test (bearGrills)': [['oNe', '1. '], ['ONE', '1. '], ['   one  ', '1. '], [' on e ', 'ELSE: '], ['1. ', 'ELSE: '], ['won', 'ELSE: '], ['toast', 'ELSE: '], ['10000', 'ELSE: '], ['1', '1. '], ['0', 'ELSE: ']],
+        'CompareStory test (treasureRoom)': [['oNe', 'ELSE: '], ['ONE', 'ELSE: '], ['   one  ', 'ELSE: '], [' on e ', 'ELSE: '], ['1. ', 'ELSE: '], ['won', 'ELSE: '], ['toast', 'ELSE: '], ['10000', '1. '], ['1', '2. '], ['0', '3. ']]
     }
 
     class_dict = {
@@ -157,9 +157,8 @@ def test_valid_user_input():
             sceneInstance = stg.StoryMap().map[stg.current_scene]
             answer = value[num][0]
             choice = sceneInstance.user_choice(answer)
-            sceneInstance.story_reduce(answer, choice, stg.gui_script)
 
-            assert_equal(stg.current_scene, value[num][1])
+            assert_equal(choice, value[num][1])
 
         ctu.output_divider(key, 'Finished Test')
 
