@@ -6,6 +6,17 @@ import custom_test_util as ctu
 import storythegame.stg as stg
 
 
+def simulate_user_entry(answer):
+    """
+    Helper function to simulate user entry and return necessary variables
+    """
+    sceneInstance = stg.StoryMap().map[stg.current_scene]
+    choice = sceneInstance.user_choice(answer)
+    sceneInstance.story_reduce(answer, choice, stg.gui_script)
+
+    return choice
+
+
 def setup():
     ctu.output_divider(setup.__name__, 'SETTING UP!')
 
@@ -100,10 +111,7 @@ def test_default_story_playthrough():
         screenplay_map[0].story_intro()
 
         for num in range(len(value)):
-            sceneInstance = stg.StoryMap().map[stg.current_scene]
-            answer = value[num][0]
-            choice = sceneInstance.user_choice(answer)
-            sceneInstance.story_reduce(answer, choice, stg.gui_script)
+            choice = simulate_user_entry(value[num][0])
 
             assert_equal(stg.current_scene, value[num][1])
 
@@ -121,10 +129,7 @@ def test_while_story():
     screenplay_map[4].story_intro()
 
     for num in range(len(user_input)):
-        sceneInstance = stg.StoryMap().map[stg.current_scene]
-        answer = user_input[num][0]
-        choice = sceneInstance.user_choice(answer)
-        sceneInstance.story_reduce(answer, choice, stg.gui_script)
+        choice = simulate_user_entry(user_input[num][0])
 
         assert_equal(stg.current_scene, user_input[num][1])
 
@@ -154,9 +159,7 @@ def test_valid_user_input():
             ctu.output_divider(key, subtitle)
 
             class_dict[key].story_intro()
-            sceneInstance = stg.StoryMap().map[stg.current_scene]
-            answer = value[num][0]
-            choice = sceneInstance.user_choice(answer)
+            choice = simulate_user_entry(value[num][0])
 
             assert_equal(choice, value[num][1])
 
